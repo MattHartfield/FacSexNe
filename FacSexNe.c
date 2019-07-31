@@ -32,7 +32,7 @@ Where:
 #include <gsl/gsl_randist.h>
 
 /* Function prototypes */
-void neutinit(double *geninit);
+void neutinit(double *geninit, unsigned int N);
 void reproduction(double *geninit, double sex);
 void gconv(double *geninit, double gc);
 double ncheck(double *geninit);
@@ -56,7 +56,7 @@ int main(int argc, char *argv[]){
 		fprintf(stderr,"Invalid number of input values.\n");
 		exit(1);
 	}
-	N = atoi(argv[1],NULL);
+	N = atoi(argv[1]);
 	sex = strtod(argv[2],NULL);
 	gc = strtod(argv[3],NULL);
 	reps = strtod(argv[4],NULL);
@@ -74,7 +74,7 @@ int main(int argc, char *argv[]){
 	r = gsl_rng_alloc(T);
 	
 	/* Setting up neutral genotype */
-	neutinit(genotype);
+	neutinit(genotype,N);
 	
 	/* Reintroducing neutral genotype, resetting hap sum */	
     Acheck = ncheck(genotype);
@@ -108,7 +108,7 @@ int main(int argc, char *argv[]){
        		/* printf("Rep Number %d\n",g); */
      		 
      		/* Reintroducing neutral genotype, resetting hap sum */     		
-	    	neutinit(genotype);
+	    	neutinit(genotype,N);
 			Acheck = ncheck(genotype);
        		Hsum = Acheck*(1-Acheck);
        	}
@@ -124,7 +124,7 @@ int main(int argc, char *argv[]){
 }
 
 /* Setting up neutral polymorphism routine */
-void neutinit(double *geninit){
+void neutinit(double *geninit, unsigned int N){
 	*(geninit + 0) = 1 - 1/(1.0*N);
 	*(geninit + 1) = 1/(1.0*N);
 	*(geninit + 2) = 0;
@@ -146,7 +146,7 @@ void reproduction(double *geninit, double sex){
 	
 	/* Change in frequencies due to sex */
 	gaaSX = sex*(gaas + gAas/2.0)*(gaas + gAas/2.0);
-	gAaSX = sex*2.0*(gaa + gAa/2.0)*(gAA + gAa/2.0);
+	gAaSX = sex*2.0*(gaas + gAas/2.0)*(gAAs + gAas/2.0);
 	gAASX = sex*(gAAs + gAas/2.0)*(gAAs + gAas/2.0);
 	
 	/* Change in frequencies due to sex */
