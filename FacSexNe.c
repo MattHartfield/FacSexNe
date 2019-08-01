@@ -11,7 +11,7 @@ Since GSL is distributed under the GNU General Public License
 separately from this file.
 
 This program can be compiled in e.g. GCC using a command like:
-gcc FacSexNe -lm -lgsl -lgslcblas -I/usr/local/include -L/usr/local/lib FacSexNe.c
+gcc -O3 FacSexNe.c -lm -lgsl -lgslcblas -o FacSexNe
 
 Then run by executing:
 ./FacSexNe N sex gc reps
@@ -149,7 +149,7 @@ void reproduction(double *geninit, double sex){
 	gAaSX = sex*2.0*(gaas + gAas/2.0)*(gAAs + gAas/2.0);
 	gAASX = sex*(gAAs + gAas/2.0)*(gAAs + gAas/2.0);
 	
-	/* Change in frequencies due to sex */
+	/* Change in frequencies due to asex */
 	gaaAS = gaas*(1 - sex);
 	gAaAS = gAas*(1 - sex);
 	gAAAS = gAAs*(1 - sex);
@@ -158,7 +158,7 @@ void reproduction(double *geninit, double sex){
 	*(geninit + 0) = gaaAS + gaaSX;
 	*(geninit + 1) = gAaAS + gAaSX;
 	*(geninit + 2) = gAAAS + gAASX;
-	
+		
 }	/* End of reproduction routine */
 
 /* Gene conversion routine */
@@ -176,7 +176,7 @@ void gconv(double *geninit, double gc){
 	
 	/* Gene conversion equations */
 	gaagc = gaar + gAar*gc/2.0;
-	gAagc = gAar*(1-gc);
+	gAagc = gAar*(1.0-gc);
 	gAAgc = gAAr + gAar*gc/2.0;
 	
 	/* Output */
@@ -189,11 +189,10 @@ void gconv(double *geninit, double gc){
 /* Has neutral allele fixed or not? Measuring its frequency */
 double ncheck(double *geninit){
 	/* Fed-in genotype frequencies (for ease of programming) */
-	double gaas, gAas, gAAs;
+	double gAas, gAAs;
 	double Atot = 0;        /* Total frequency of A */
 	
 	/* Initial definition of genotypes */
-	gaas = *(geninit + 0);
 	gAas = *(geninit + 1);
 	gAAs = *(geninit + 2);
 		
