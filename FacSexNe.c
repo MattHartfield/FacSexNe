@@ -10,10 +10,7 @@ Since GSL is distributed under the GNU General Public License
 (http://www.gnu.org/copyleft/gpl.html), you must download it 
 separately from this file.
 
-This program can be compiled in e.g. GCC using a command like:
-gcc -O3 FacSexNe.c -lm -lgsl -lgslcblas -o FacSexNe
-
-Then run by executing:
+Run by executing:
 ./FacSexNe N sex gc reps
 Where:
 - N is the population size
@@ -46,6 +43,8 @@ int main(int argc, char *argv[]){
 	double gc = 0;					/* Frequency of gene conversion */
 	double Acheck = 0;				/* Frequency of derived neutral allele (A) after each reproduction */
 	double Hsum = 0;				/* Summed heterozygosity over transit time of neutral allele */
+	char Hout[128];				/* String to hold filename in */
+	FILE *ofp_hs = NULL;			/* Pointer for results output */
 	
 	/* GSL random number definitions */
 	const gsl_rng_type * T; 
@@ -103,7 +102,15 @@ int main(int argc, char *argv[]){
 		/* printf("%.10lf %.10lf\n",Acheck,Hsum); */
        	
        	if(Acheck == 0 || Acheck == 1){
-       		printf("%.10lf\n",Hsum);
+       		sprintf(Hout,"/scratch/mhartfield/CC_FSC_Ne/temp_s%.7lf_gc%.7lf.out",sex,gc);
+       		if(g != 0){
+				ofp_hs = fopen(Hout,"a");
+			}else if(g == 0){
+				ofp_hs = fopen(Hout,"w");
+			}
+			fprintf(ofp_hs,"%.10lf\n",Hsum);
+			fclose(ofp_hs);
+       		/* printf("%.10lf\n",Hsum); */
        		g++;
        		/* printf("Rep Number %d\n",g); */
      		 
