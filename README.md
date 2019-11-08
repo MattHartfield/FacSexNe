@@ -1,6 +1,6 @@
 README FOR FAC SEX NE
 
-Scripts used to simulate spread of neutral alleles under facultative sex. Code based on that used in Agrawal and Hartfield (https://github.com/MattHartfield/BalSelSims). As used in the study "Approximating the coalescent under facultative sex".
+Scripts used to simulate spread of neutral alleles under facultative sex. Code based on that used in Agrawal and Hartfield 2016 (https://github.com/MattHartfield/BalSelSims). As used in the study "Approximating the coalescent under facultative sex".
 
 Simulation uses routines found with the GNU Scientific Library (GSL) (http://www.gnu.org/software/gsl/). Since GSL is distributed under the GNU General Public License (http://www.gnu.org/copyleft/gpl.html), you must download it separately from this file.
 
