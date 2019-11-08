@@ -15,7 +15,7 @@ Run by executing:
 Where:
 - N is the population size
 - sex is the frequency of sex (a value between 0 = obligate asex, and 1 = obligate sex)
-- gc is the frequency of gene conversion
+- gc is the frequency of mitotic gene conversion
 - reps is how many times to introduce linked neutral allele
 
 */
@@ -38,12 +38,12 @@ double ncheck(double *geninit);
 int main(int argc, char *argv[]){
 	unsigned int N = 0;				/* Population size */
 	unsigned int g, i; 				/* Counters. Reps counter, geno counter */
-	unsigned int reps;				/* Length of simulation (no. of introductions of neutral site) */
+	unsigned int reps = 0;			/* Length of simulation (no. of introductions of neutral site) */
 	double sex = 0;					/* Frequency of sexual reproduction */
 	double gc = 0;					/* Frequency of gene conversion */
 	double Acheck = 0;				/* Frequency of derived neutral allele (A) after each reproduction */
 	double Hsum = 0;				/* Summed heterozygosity over transit time of neutral allele */
-	char Hout[128];				/* String to hold filename in */
+	char Hout[128];					/* String to hold filename in */
 	FILE *ofp_hs = NULL;			/* Pointer for results output */
 	
 	/* GSL random number definitions */
@@ -66,7 +66,7 @@ int main(int argc, char *argv[]){
 	  
 	/* create a generator chosen by the 
     environment variable GSL_RNG_TYPE */
-     
+
 	gsl_rng_env_setup();
 	if (!getenv("GSL_RNG_SEED")) gsl_rng_default_seed = time(0);
 	T = gsl_rng_default;
@@ -77,8 +77,7 @@ int main(int argc, char *argv[]){
 	
 	/* Reintroducing neutral genotype, resetting hap sum */	
     Acheck = ncheck(genotype);
-    Hsum = Acheck*(1-Acheck);
-    /* printf("%.10lf %.10lf\n",Acheck,Hsum); */
+    Hsum = Acheck*(1.0-Acheck);
     
     /* Introduce and track neutral mutations 'reps' times */
     g = 0;
@@ -98,11 +97,10 @@ int main(int argc, char *argv[]){
        	
        	/* Checking state of haplotypes: if A fixed reset so can start fresh next time */
 		Acheck = ncheck(genotype);
-		Hsum += Acheck*(1-Acheck);
-		/* printf("%.10lf %.10lf\n",Acheck,Hsum); */
+		Hsum += Acheck*(1.0-Acheck);
        	
        	if(Acheck == 0 || Acheck == 1){
-       		sprintf(Hout,"/scratch/mhartfield/CC_FSC_Ne/temp_s%.7lf_gc%.7lf.out",sex,gc);
+       		sprintf(Hout,"/scratch/mhartfield/CC_FSC_Ne/temp_s%.8lf_gc%.8lf.out",sex,gc);
        		if(g != 0){
 				ofp_hs = fopen(Hout,"a");
 			}else if(g == 0){
@@ -110,9 +108,7 @@ int main(int argc, char *argv[]){
 			}
 			fprintf(ofp_hs,"%.10lf\n",Hsum);
 			fclose(ofp_hs);
-       		/* printf("%.10lf\n",Hsum); */
        		g++;
-       		/* printf("Rep Number %d\n",g); */
      		 
      		/* Reintroducing neutral genotype, resetting hap sum */     		
 	    	neutinit(genotype,N);
@@ -197,7 +193,7 @@ void gconv(double *geninit, double gc){
 double ncheck(double *geninit){
 	/* Fed-in genotype frequencies (for ease of programming) */
 	double gAas, gAAs;
-	double Atot = 0;        /* Total frequency of A */
+	double Atot = 0.0;        /* Total frequency of A */
 	
 	/* Initial definition of genotypes */
 	gAas = *(geninit + 1);
