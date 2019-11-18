@@ -27,6 +27,6 @@ Where:
 
 *** Mathematica notebook ***
 
-"S1 File.zip" is a Mathematica notebook (and PDF printout) outlining the mathematical derivations used in the manuscript.
+"File S1.zip" is a Mathematica notebook (and PDF printout) outlining the mathematical derivations used in the manuscript. The Wolfram Player (https://www.wolfram.com/player/) can be used to view the file if you do not have the Mathematica software.
 
 Comments to m.hartfield@ed.ac.uk.
